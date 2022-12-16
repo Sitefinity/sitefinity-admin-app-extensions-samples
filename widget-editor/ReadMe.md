@@ -45,4 +45,4 @@ For reference, refer to the [custom-wdiget-editor.component](http://admin-app-ex
 
 ## Example
 
-![Widget Designer](./../../assets/widget-designer.PNG)
+![Widget Designer](./../assets/widget-designer.PNG)

@@ -128,4 +128,4 @@ For example, if you would like to remove the Delete command for the news items y
 
 ## Example
 
-![Print preview](./../../assets/print-preview.JPG)
+![Print preview](./../assets/print-preview.JPG)

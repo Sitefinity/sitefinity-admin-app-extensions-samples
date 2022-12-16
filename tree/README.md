@@ -3,7 +3,7 @@
 ## Introduction
 The list component in the Sitefinity AdminApp is used in various places in the application, for example, the grid (the list of content items), the sidebar, related data and so forth. This extension will allow you to inject a custom Angualr component in the list's item template. The picture below shows where the custom component will be rendered in the list's item template.
 
-![Location of where the custom component will be rendered in the list](./../../assets/tree/sample.png)
+![Location of where the custom component will be rendered in the list](./../assets/tree/sample.png)
 
 ### Demo for related data
 The custom component for the related data feature will be rendered, in the following parts of the UI
@@ -12,7 +12,7 @@ The custom component for the related data feature will be rendered, in the follo
 * related data selector and adjacent search feature
 * readonly mode of the content item
 
-![Demo](./../../assets/tree/RelatedDataCustomTreeComponent.gif)
+![Demo](./../assets/tree/RelatedDataCustomTreeComponent.gif)
 
 > Please note that the search functionality in the related data fields (and in the entire AdminApp) is based on the item's primary identifier, which in the case of the default content modules is the `Title`. When you modify the component rendered in the tree's item template, it will not affect the search feature. If you would like to add another field to be included in the search, please see the [search config]("./../../search").
 
