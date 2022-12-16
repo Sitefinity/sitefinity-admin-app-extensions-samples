@@ -17,13 +17,15 @@ The other method of the interface [**getColumnsToRemove()**](http://admin-app-ex
 You can arrange your custom columns in the grid via the [**ColumnModel's**](http://admin-app-extensions-docs.sitefinity.site/interfaces/columnmodel.html) [**ordinal?**](http://admin-app-extensions-docs.sitefinity.site/interfaces/columnmodel.html#ordinal) property.
 
 Prerequisite: The columns that come from Sitefinity have a some limitations
+
 - the **Main** (usually Title) column will **always** be the first (leftmost) column with an ordinal of `Number.MIN_SAFE_INTEGER`
 - the **Actions** column will **always** be the last (rightmost) column with an ordinal of `Number.MAX_SAFE_INTEGER`
-    - the **Analytics** column, if present, will **always** be right before (to the left of) the **Actions** column with an ordinal of `Number.MAX_SAFE_INTEGER - 1`
-    - the **Sitefinity Insights** column, if present, will **always** be right before (to the left of) the **Analytics** column with an ordinal of `Number.MAX_SAFE_INTEGER - 2`
+  - the **Analytics** column, if present, will **always** be right before (to the left of) the **Actions** column with an ordinal of `Number.MAX_SAFE_INTEGER - 1`
+  - the **Sitefinity Insights** column, if present, will **always** be right before (to the left of) the **Analytics** column with an ordinal of `Number.MAX_SAFE_INTEGER - 2`
 
 All other columns are spaced by `100`. For example if the columns that come from Sitefinity are: Main, Calendar, Start Date, End Date, Translations and Actions in that order, their respective ordinals will be `Number.MIN_SAFE_INTEGER`, `100`, `200`, `300`, `400` and `Number.MAX_SAFE_INTEGER`. In this case if you would like to position your custom column between the Start Date and End Date columns you would have to give your column an ordinal in the range of `201-299` inclusive.
 
 Notes:
+
 - You should never create a column with an ordinal that is reducable by a modulo of 100, i.e. `0 % 100 = 0`, `200 % 100 = 0`.
 - If a custom column is left without supplying a ordinal property it will be the last column before the system last column(s).

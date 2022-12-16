@@ -26,7 +26,7 @@ For reference please refer to the [custom fields sample](../custom-fields/README
 
 ## Overriding the entire designer
 
-If you wish to replace the appearance of the entire designer, then you can do so by inheriting from the WidgetEditorViewProvider interface. This interface gets called each time a widget designer is opened. It contains a [single method]((http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-widget-editor-view-provider.html#overrideView) which gets invoked by the AdminApp. This method gets invoked with a single parameter(context) that has the property widgetName. The name of the currently edited widget is passed as a value in this parameter. Thus you can selectively decide whether to override the designer for a specific widget or not. For reference see the [CustomWidgetEditorViewProvider](http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-widget-editor-view-provider.html) class.
+If you wish to replace the appearance of the entire designer, then you can do so by inheriting from the WidgetEditorViewProvider interface. This interface gets called each time a widget designer is opened. It contains a [single method](http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-widget-editor-view-provider.html#overrideView) which gets invoked by the AdminApp. This method gets invoked with a single parameter(context) that has the property widgetName. The name of the currently edited widget is passed as a value in this parameter. Thus you can selectively decide whether to override the designer for a specific widget or not. For reference see the [CustomWidgetEditorViewProvider](http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-widget-editor-view-provider.html) class.
 
 As a return result from this method, it is required to return the reference to the component that you wish to be displayed. This component must implement the interface WidgetEditor. It contains the following methods:
 
@@ -42,7 +42,6 @@ As a return result from this method, it is required to return the reference to t
 
 For reference, refer to the [custom-wdiget-editor.component](http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-editor/custom-wdiget-editor.component)
 
-
 ## Example
 
-![Widget Designer](./../../assets/widget-designer.PNG)
+![Widget Designer](./../assets/widget-designer.PNG)

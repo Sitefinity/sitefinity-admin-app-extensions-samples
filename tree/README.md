@@ -1,18 +1,21 @@
 # Custom list components
 
 ## Introduction
-The list component in the Sitefinity AdminApp is used in various places in the application, for example, the grid (the list of content items), the sidebar, related data and so forth. This extension will allow you to inject a custom Angualr component in the list's item template. The picture below shows where the custom component will be rendered in the list's item template.
 
-![Location of where the custom component will be rendered in the list](./../../assets/tree/sample.png)
+The list component in the Sitefinity AdminApp is used in various places in the application, for example, the grid (the list of content items), the sidebar, related data and so forth. This extension will allow you to inject a custom Angular component in the list's item template. The picture below shows where the custom component will be rendered in the list's item template.
+
+![Location of where the custom component will be rendered in the list](./../assets/tree/sample.png)
 
 ### Demo for related data
+
 The custom component for the related data feature will be rendered, in the following parts of the UI
+
 * already selected related items
 * dropdown selector for the recent items and adjacent search feature
 * related data selector and adjacent search feature
 * readonly mode of the content item
 
-![Demo](./../../assets/tree/RelatedDataCustomTreeComponent.gif)
+![Demo](./../assets/tree/RelatedDataCustomTreeComponent.gif)
 
 > Please note that the search functionality in the related data fields (and in the entire AdminApp) is based on the item's primary identifier, which in the case of the default content modules is the `Title`. When you modify the component rendered in the tree's item template, it will not affect the search feature. If you would like to add another field to be included in the search, please see the [search config]("./../../search").
 
@@ -45,7 +48,6 @@ import { CustomTreeNodeComponentBase } from "@progress/sitefinity-adminapp-sdk/a
 export class RelatedDataCustomComponent extends CustomTreeNodeComponentBase {
     @Input() item: DataItem;
 }
-
 ```
 
 ### Registering the component
@@ -63,7 +65,6 @@ export class RelatedDataTreeNodeComponentProvider implements TreeNodeComponentPr
     getComponentData(feature: TreeNodeComponentFeatures, entitySet: string): ComponentData {
     }
 }
-
 ```
 
 Sample implementation:
@@ -116,7 +117,6 @@ export const CUSTOM_TREE_COMPONENT_PROVIDER: ClassProvider = {
     multi: true,
     provide: CUSTOM_TREE_COMPONENT_TOKEN
 };
-
 ```
 
 Last but not least, we must create a custom angular module for this extension (you could reuse another module if you have created one previously) and register it where all other extension are registered.
@@ -145,7 +145,6 @@ import { RelatedDataCustomComponent } from "./related-data-custom.component";
     ]
 })
 export class RelatedDateExtenderModule { /* empty */ }
-
 ```
 
 To register the module, go to the `__extensions_index.ts` file and add the following line:
