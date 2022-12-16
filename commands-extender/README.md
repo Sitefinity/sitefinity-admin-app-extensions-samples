@@ -1,6 +1,7 @@
 # Custom commands
 
-### Table of content
+## Table of content
+
 * [Overview](#overview)
 * [Add custom commands](#add-custom-commands)
 * [Add custom command categories](#add-custom-command-categories)
@@ -10,15 +11,15 @@
 ## Overview
 
 You can register custom command and execute some custom logic when executing them. They can be added in several places:
-* in the Grid View
-   * next to the Create command
-   * in the settings sidebar (next to the Permissions, Settings, Custom fields, etc. commands)
-   * in the grid *Bulk Actions* menu
-   * in the *Actions* menu of an item
-* in the Edit View
-   * next to the Publish button
-   * in the *Actions* menu of an item
 
+* in the Grid View
+  * next to the Create command
+  * in the settings sidebar (next to the Permissions, Settings, Custom fields, etc. commands)
+  * in the grid *Bulk Actions* menu
+  * in the *Actions* menu of an item
+* in the Edit View
+  * next to the Publish button
+  * in the *Actions* menu of an item
 
 In order to register a custom command, you have to implement the [**CommandProvider**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandprovider.html) interface. The interface consists of two methods:
 
@@ -55,35 +56,33 @@ To add a command to the exact place where you want the [**data**](http://admin-a
 
 * To add a command to the grid *Actions* menu of an item - the [**dataItem's**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#dataitem) [**data**](http://admin-app-extensions-docs.sitefinity.site/interfaces/dataitem.html#data) property should **not** be null and the [**target**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#target) property should have value [**List**](http://admin-app-extensions-docs.sitefinity.site/enums/commandstarget.html#list).
 
-
 * To add a command to the edit view *Actions* menu of an item - the [**dataItem's**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#dataitem) [**data**](http://admin-app-extensions-docs.sitefinity.site/interfaces/dataitem.html#data) property should **not** be null and the [**target**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#target) property should have value [**Edit**](http://admin-app-extensions-docs.sitefinity.site/enums/commandstarget.html#edit).
-
 
 * To add a command to the create view *Actions* menu of an item - the [**dataItem's**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#dataitem) [**data**](http://admin-app-extensions-docs.sitefinity.site/interfaces/dataitem.html#data) property should be null and the [**target**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html#target) property should have value [**Create**](http://admin-app-extensions-docs.sitefinity.site/enums/commandstarget.html#create).
 
 ```typescript
-    getCommands(data: CommandsData): Observable<CommandModel[]> {
-        const commands: CommandModel[] = [];
+getCommands(data: CommandsData): Observable<CommandModel[]> {
+    const commands: CommandModel[] = [];
 
-        if (data.target === CommandsTarget.Create && data.dataItem) {
-            const commnad: CommandModel = {
-                name: "exampleCommand",
-                title: "Example Command",
-                category: "Custom",
-                ordinal: 1
-            }
-            commnad.token = {
-                type: CommandImplementationClass,
-                properties: {
-                    dataItem: data.dataItem
-                }
-            };
-
-            commands.push(commnad);
+    if (data.target === CommandsTarget.Create && data.dataItem) {
+        const commnad: CommandModel = {
+            name: "exampleCommand",
+            title: "Example Command",
+            category: "Custom",
+            ordinal: 1
         }
+        commnad.token = {
+            type: CommandImplementationClass,
+            properties: {
+                dataItem: data.dataItem
+            }
+        };
 
-        return of(commands);
+        commands.push(commnad);
     }
+
+    return of(commands);
+}
 ```
 
 ## Add custom command categories
@@ -116,14 +115,15 @@ class CustomCommandsFilter implements CommandsFilter  {
 * [**filter()**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsfilter.html#filter) - the method accepts an array of [**CommandModel[]**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandmodel.html) that contains all commands and [**data**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html) parameter. Similarly to when adding custom command you have to use the [**data**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsdata.html) parameter to determine the place from where you want to remove the command (grid, bulk menu, actions menu, etc.). The method should return the filtered commands.
 
 For example, if you would like to remove the Delete command for the news items you should implement the [**filter()**](http://admin-app-extensions-docs.sitefinity.site/interfaces/commandsfilter.html#filter) method like so:
-```typescript
-    filter(operations: CommandModel[], data: CommandsData): CommandModel[] {
-        if (data.dataItem.metadata.setName === "newsitems") {
-            return operations.filter(x => x.name !== "Delete");
-        }
 
-        return operations;
+```typescript
+filter(operations: CommandModel[], data: CommandsData): CommandModel[] {
+    if (data.dataItem.metadata.setName === "newsitems") {
+        return operations.filter(x => x.name !== "Delete");
     }
+
+    return operations;
+}
 ```
 
 ## Example

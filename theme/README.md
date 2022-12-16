@@ -1,26 +1,24 @@
 # Admin App custom theme
 
-You can customize the appearance of the Admin App by modifying specific components of the user interface. Thus, you create a custom theme for the new content experience backend, that is, the Admin App. You can customize the following components: 
+You can customize the appearance of the Admin App by modifying specific components of the user interface. Thus, you create a custom theme for the new content experience backend, that is, the Admin App. You can customize the following components:
 
-* Button colors, such as border, background, and text color 
+* Button colors, such as border, background, and text color
+* Secondary text, such as notes and descriptions of UI elements
+* Input placeholder text, such as hints for input fields
 
-* Secondary text, such as notes and descriptions of UI elements 
-
-* Input placeholder text, such as hints for input fields 
-
-You can also set an outline style for all UI focusable elements, for example, buttons or input fields, and so on. 
+You can also set an outline style for all UI focusable elements, for example, buttons or input fields, and so on.
 
 **NOTE:** The custom theme and its customizations are stored in the **Local Storage**. Thus, you can see the custom Admin App theme in the current browser only. Therefore, in case you clear your **Local Storage** or use another browser, the theme applied will be the default one, not the custom one.
 
-To customize the Admin App theme, you need to create a custom implementation of the [**ThemeProvider**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeprovider.html) interface and its [**getThemes()**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeprovider.html#getthemes) method. The method returns an **Array** of the [**ThemeItem**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeitem.html) object. Theme items must contain the [**name**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeitem.html#name) of your custom theme and an array of the [**ThemeVariablesKeyValuePair**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themevariableskeyvaluepair.html). The key-value pair contains the following: 
+To customize the Admin App theme, you need to create a custom implementation of the [**ThemeProvider**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeprovider.html) interface and its [**getThemes()**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeprovider.html#getthemes) method. The method returns an **Array** of the [**ThemeItem**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeitem.html) object. Theme items must contain the [**name**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themeitem.html#name) of your custom theme and an array of the [**ThemeVariablesKeyValuePair**](http://admin-app-extensions-docs.sitefinity.site/interfaces/themevariableskeyvaluepair.html). The key-value pair contains the following:
 
 * **key: ThemeVariables**
-  The [**ThemeVariables**](http://admin-app-extensions-docs.sitefinity.site/enums/themevariables.html) value is an Enum of all exposed CSS variables that can be modified, such as the properties of colors or buttons. 
+  The [**ThemeVariables**](http://admin-app-extensions-docs.sitefinity.site/enums/themevariables.html) value is an Enum of all exposed CSS variables that can be modified, such as the properties of colors or buttons.
 
 * **value: string**
-  The string value is the value that you set for the specific CSS variable, for example, *"#38AB63"*. 
+  The string value is the value that you set for the specific CSS variable, for example, *"#38AB63"*.
 
-**NOTE:** In key-value pairs, you abide by the following syntax: **{ key: ThemeVariables.DefaultButtonColor, value: "#333" }**. You thus set the color of the default button to be color **#333**. 
+**NOTE:** In key-value pairs, you abide by the following syntax: **{ key: ThemeVariables.DefaultButtonColor, value: "#333" }**. You thus set the color of the default button to be color **#333**.
 
 The following table lists all exposed variables, that is UI components, along with sample values.
 
