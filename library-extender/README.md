@@ -1,12 +1,12 @@
 # Custom Digital Assets Management provider
 
-You can add custom DAM providers in case you are using DAM which is not supported from Sitefinity by default.
+You can add custom DAM providers if you use DAM, which Siteifnity does not support by default.
 
-If you prefer your custom implementation for any of the DAM providers which is supported by default just make sure that it's _isSupported_ method returns __true__ for that _providerTypeName_ e.g. `return providerTypeName === "CloudinaryBlobStorageProvider";`.
+If you prefer your custom implementation for any DAM providers supported by default, make sure that its _isSupported_ method returns __true__ for that _providerTypeName_, e.g., `return providerTypeName === "CloudinaryBlobStorageProvider";`.
 
-_Note: There must be only one enabled DAM provider on the server. In your case this should be the server-side implementation of your custom DAM provider._
+_Note: There must be only one enabled DAM provider on the server. In your case, this should be the server-side implementation of your custom DAM provider._
 
-In order to register new provider you need to create new class which extends __DamProviderBase__.
+To register a new provider, you need to create a new class that extends __DamProviderBase__.
 
 ```typescript
 import { ClassProvider, Injectable } from "@angular/core";
@@ -29,9 +29,9 @@ class CustomDamProvider extends DamProviderBase {
 }
 ```
 
-There are two abstract methods that need to be implemented because they are specific for each provider:
+You need to implement two abstract methods because they are specific for each provider:
 
-* isSupported - Use this method to determine if your provider supports the one that is enabled on the server. As parameter it receives the name of the Provider Type. You can name the provider anyway you want, what matters is the name of the Class on the server.
+* isSupported - Use this method to determine if your provider supports the one enabled on the server. As a parameter, it receives the name of the Provider Type. You can name the provider any way you want, what matters is the name of the Class on the server.
 
 ```typescript
 isSupported(providerTypeName: string): boolean {
@@ -39,9 +39,9 @@ isSupported(providerTypeName: string): boolean {
 }
 ```
 
-* loadMediaSelector - Use this method to instantiate the widget which is used to select and import asses from your DAM.
+* loadMediaSelector - Use this method to instantiate the widget used to select and import asses from your DAM.
 
-It must call __loadDynamicScript__ to embed the script of the DAM's widget into the page in order to open it. After script is loaded use the API of the DAM to create instance of the widget and open it. Attatch to the handler for inserting assets and convert all selected to the specific interface __DamAsset__. Add them to an array and call __assetsSelected__ method of the base class.
+It must call __loadDynamicScript__ to embed the script of the DAM's widget into the page to open it. After the script is loaded, use the API of the DAM to create an instance of the widget and open it. Attach to the handler for inserting assets and convert all selected to the specific interface __DamAsset__. Add them to an array and call the __assetsSelected__ method of the base class.
 
 ```typescript
 loadMediaSelector(damWrapper: HTMLElement, mediaEntityData: EntityData, allowMultiSelect: boolean): void {
@@ -97,4 +97,4 @@ export const CUSTOM_DAM_PROVIDER: ClassProvider = {
 };
 ```
 
-After the implementation is complete when click on insert image/document in the rich editor or click to relate media item the widget of the DAM provider will open into the dialog.
+After the implementation is complete, when clicking on insert image/document in the rich editor or clicking to relate media item, the widget of the DAM provider will open into the dialog.
