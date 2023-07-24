@@ -1,5 +1,5 @@
 import { ClassProvider } from "@angular/core";
-import { ComponentData } from "@progress/sitefinity-adminapp-sdk/app/api/v1/index-component/component-data";
+import { ComponentData } from "@progress/sitefinity-component-framework";
 import { TreeNodeComponentProvider , CUSTOM_TREE_COMPONENT_TOKEN } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree";
 import { TreeNodeComponentFeatures } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree/custom-tree-node-component-features";
 import { RelatedDataCustomComponent } from "./related-data-custom.component";
