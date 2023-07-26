@@ -5,6 +5,7 @@ import { FrameworkModule } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 import { CUSTOM_WIDGET_EDITOR_VIEW_TOKEN } from './custom-editor/custom-widget-editor-view-provider';
 import { FormsModule } from '@angular/forms';
 import { CustomWidgetEditorComponent } from './custom-editor/custom-widget-editor.component';
+import { SfInputModule } from "@progress/sitefinity-component-framework";
 
 /**
  * The widget editor extender module.
@@ -19,7 +20,7 @@ import { CustomWidgetEditorComponent } from './custom-editor/custom-widget-edito
         CustomWidgetEditorComponent
     ],
     imports: [
-        FormsModule, FrameworkModule
+        FormsModule, SfInputModule, FrameworkModule
     ]
 })
 export class WidgetEditorExtenderModule { /* empty */ }

@@ -57,7 +57,8 @@ The component you have implemented must be registered in a class that implements
 To implement a custom provider you start of by creating a custom class, which for the sake of the sample will be called `RelatedDataTreeNodeComponentProvider` and it must implement the `TreeNodeComponentProvider` interface.
 
 ```typescript
-import { TreeNodeComponentProvider, ComponentData } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
+import { ComponentData } from "@progress/sitefinity-component-framework";
+import { TreeNodeComponentProvider } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 import { TreeNodeComponentFeatures } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree/custom-tree-node-component-features";
 
 export class RelatedDataTreeNodeComponentProvider implements TreeNodeComponentProvider {
@@ -70,7 +71,8 @@ export class RelatedDataTreeNodeComponentProvider implements TreeNodeComponentPr
 Sample implementation:
 
 ```typescript
-import { TreeNodeComponentProvider, ComponentData } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
+import { ComponentData } from "@progress/sitefinity-component-framework";
+import { TreeNodeComponentProvider } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 import { TreeNodeComponentFeatures } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree/custom-tree-node-component-features";
 import { RelatedDataCustomComponent } from "./related-data-custom.component";
 
@@ -93,7 +95,7 @@ Almost there, we need to export the provider using a special Angualr DI token `C
 
 ```typescript
 import { ClassProvider } from "@angular/core";
-import { ComponentData } from "@progress/sitefinity-adminapp-sdk/app/api/v1/index-component/component-data";
+import { ComponentData } from "@progress/sitefinity-component-framework";
 import { TreeNodeComponentProvider , CUSTOM_TREE_COMPONENT_TOKEN } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree";
 import { TreeNodeComponentFeatures } from "@progress/sitefinity-adminapp-sdk/app/api/v1/tree/custom-tree-node-component-features";
 import { RelatedDataCustomComponent } from "./related-data-custom.component";
