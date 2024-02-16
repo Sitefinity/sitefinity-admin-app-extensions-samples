@@ -17,7 +17,7 @@ The custom component for the related data feature will be rendered, in the follo
 
 ![Demo](./../assets/tree/RelatedDataCustomTreeComponent.gif)
 
-> Please note that the search functionality in the related data fields (and in the entire AdminApp) is based on the item's primary identifier, which in the case of the default content modules is the `Title`. When you modify the component rendered in the tree's item template, it will not affect the search feature. If you would like to add another field to be included in the search, please see the [search config]("./../../search").
+> Please note that the search functionality in the related data fields (and in the entire AdminApp) is based on the item's primary identifier, which in the case of the default content modules is the `Title`. When you modify the component rendered in the tree's item template, it will not affect the search feature. If you would like to add another field to be included in the search, please see the [search config]("https://www.progress.com/documentation/sitefinity-cms/backend-interface-settings#search-section-").
 
 ## Development process
 
