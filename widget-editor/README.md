@@ -40,7 +40,7 @@ As a return result from this method, it is required to return the reference to t
 
 * getModifiedProperties -> invoked to return the modified properties from the designer.
 
-For reference, refer to the [custom-wdiget-editor.component](http://admin-app-extensions-docs.sitefinity.site/interfaces/custom-editor/custom-wdiget-editor.component)
+For reference, refer to the [WidgetEditor Interface](http://admin-app-extensions-docs.sitefinity.site/interfaces/widgeteditor.html)
 
 ## Example
 
