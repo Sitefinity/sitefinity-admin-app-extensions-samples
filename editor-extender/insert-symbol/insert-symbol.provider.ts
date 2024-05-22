@@ -11,6 +11,7 @@ const TOOLBAR_BUTTON_DATA = {
 };
 
 declare const kendo;
+declare const jQuery: any;
 
 require("!style-loader!css-loader!./insert-symbol.provider.css");
 import symbolList from "./symbol-list/symbol-list.json";
@@ -60,7 +61,7 @@ class InsertSymbolProvider implements EditorConfigProvider {
             name: TOOLBAR_BUTTON_DATA.DEFAULT.name,
             tooltip: TOOLBAR_BUTTON_DATA.DEFAULT.tooltip,
             ordinal: -1,
-            exec: () => { return; }
+            exec: () => {}
         };
 
         this.configureInsertSymbolTool();
@@ -68,42 +69,59 @@ class InsertSymbolProvider implements EditorConfigProvider {
     }
 
     private configureInsertSymbolTool() {
-        const buttonTemplate = kendo.ui.editor.EditorUtils.buttonTemplate;
-        const NS = "kendoEditor";
-
         const popupTemplateGenerator = function () {
             const symbolGenerator = new InsertSymbolGenerator(Object.keys(symbolList).map(k => symbolList[k]));
             const generatedHtml = symbolGenerator.generateHtml();
             return `<div class='k-ct-popup symbol-popup'><div class='k-status symbol-title'>INSERT SPECIAL CHARACTERS</div>${generatedHtml}</div>`;
         };
 
-        const config: ToolConfig = {
-            _activate: function () {
-                const that = this;
-                const element = that.popup().element;
+        const Tool = kendo.ui.editor.Tool;
 
-                element.autoApplyNS(NS).on("down", function (e) {
-                    e.preventDefault();
-                    const symbolCell = e.target;
-                    const symbolValue = symbolCell.getAttribute(DATA_ATTRIBUTE_NAME);
-                    that._exec(symbolValue);
+        const PopupTool = Tool.extend({
+            initialize: function (ui, editor) {
+                this.editor = editor;
+                const popup = jQuery(this.options.popupTemplate)
+                    .appendTo("body")
+                    .kendoPopup({
+                        anchor: ui,
+                        copyAnchorStyles: false,
+                        open: this._open.bind(this),
+                        activate: this._activate.bind(this),
+                        close: this._close.bind(this),
+                    })
+                    .data("kendoPopup");
+                this.popup = popup;
+
+                ui.on("click", this._toggle.bind(this));
+            },
+            _toggle: function () {
+                this.popup.toggle();
+            },
+            command: jQuery.noop,
+            _open: function() {
+
+            },
+            _activate: function() {
+                const that = this;
+                that.popup.element.find(".symbol-cell").each(function() {
+                    jQuery(this).click(function() {
+                        that.popup.close();
+                        const symbol = jQuery(this).text();
+                        that.editor.paste(symbol);
+                    });
                 });
             },
-            _exec: function (sym) {
-                // adds the chosen symbol to the editor
-                this._editor.paste(sym);
-                this._editor.trigger("change");
-
-                this.popup().close();
+            _close: function() {
+                const that = this;
+                that.popup.element.find(".symbol-cell").each(function() {
+                    jQuery(this).off("click");
+                });
             },
-            _close: function () {
-                this.popup().element.off("." + NS);
+            destroy: function() {
+                this.popup.destroy();
             }
-        };
-
-        const insertSymbolTool = ToolBuilder.createPopupTool(kendo, TOOLBAR_BUTTON_DATA.DEFAULT.name, config, null, popupTemplateGenerator);
-
-        ToolBuilder.registerTool(kendo, insertSymbolTool, TOOLBAR_BUTTON_DATA.DEFAULT.name, buttonTemplate, true);
+        });
+        ToolBuilder.registerTool(kendo, PopupTool, TOOLBAR_BUTTON_DATA.DEFAULT.name, popupTemplateGenerator(), true);
     }
 }
 
