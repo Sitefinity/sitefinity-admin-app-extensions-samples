@@ -87,15 +87,9 @@ export class ToolBuilder {
      * @param isPopup Whether the tool is a popup or not
      */
     public static registerTool (kendo: any, Tool: any, toolTitle: string, toolTemplate: any, isPopup: boolean = false): void {
-        const EditorUtils = kendo.ui.editor.EditorUtils;
-        const ToolTemplate = kendo.ui.editor.ToolTemplate;
-
-        EditorUtils.registerTool(toolTitle, new Tool({
-            template: new ToolTemplate({
-                template: toolTemplate,
-                popup: isPopup,
-                title: toolTitle
-            })
+        kendo.ui.editor.EditorUtils.registerTool(toolTitle, new Tool({
+            ui: isPopup ? { overflow: 'never' } : {},
+            popupTemplate: toolTemplate
         }));
     }
 }
