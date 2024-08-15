@@ -15,11 +15,12 @@
 
 .k-i-Left-to-right::after {
     content: "\f1dd";
+    margin-right: 15px;
 }
 
 .k-i-Left-to-right::before {
     content: "\f0da";
-    margin-left: 15px;
+    margin-right: 0 !important;
 }
 
 .k-icon.k-i-Left-to-right::before,
@@ -32,14 +33,6 @@
 .k-icon.k-i-Right-to-left::after {
     padding: 5px 5px 5px 0;
     height: 25px !important;
-}
-
-.k-icon.k-i-Right-to-left::before {
-    margin-right: 0 !important;
-}
-
-.k-icon.k-i-Right-to-left::after {
-    margin-right: 15px;
 }
 
 .k-state-selected .k-icon::after {
