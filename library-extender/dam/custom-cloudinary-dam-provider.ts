@@ -12,7 +12,7 @@ const CLOUDINARY_VERSION_QUERY_PARAM = "sf_cl_version";
 
 // example implementation for custom provider based on Cloudinary
 @Injectable()
- class CustomCloudinaryDamProvider extends DamProviderBase {
+class CustomCloudinaryDamProvider extends DamProviderBase {
     constructor(zone: NgZone) {
         super(zone);
     }
@@ -127,6 +127,20 @@ const CLOUDINARY_VERSION_QUERY_PARAM = "sf_cl_version";
             size: Math.floor(asset.bytes),
             url: url
         };
+
+        // you can use additionalProperties to pass more fields to be set to the imported MediaContent item:
+        // e.g. default MediaContent fields like 'AlternativeText' and 'Author' or custom fileds like 'MyCustomField'
+        damAsset.additionalProperties = {
+            "MyCustomField": "custom field value"
+        };
+
+        if (asset.context?.custom?.alt) {
+            damAsset.additionalProperties["AlternativeText"] = asset.context.custom.alt;
+        }
+
+        if (asset.context?.custom?.author) {
+            damAsset.additionalProperties["Author"] = asset.context?.custom?.author;
+        }
 
         return damAsset;
     }
