@@ -11,7 +11,8 @@ import imageData from "./image-data.json";
  * A custom component to be displayed in each cell in a specific column in the grid.
  */
 @Component({
-    templateUrl: "./image.component.html"
+    templateUrl: "./image.component.html",
+    standalone: false
 })
 export class ImageComponent implements OnInit, DataContextComponent {
 
