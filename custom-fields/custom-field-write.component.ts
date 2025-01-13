@@ -7,7 +7,8 @@ import { FieldBase } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
  */
 @Component({
     templateUrl: "./custom-field-write.component.html",
-    styleUrls: [ "./custom-field-write.component.css" ]
+    styleUrls: ["./custom-field-write.component.css"],
+    standalone: false
 })
 export class CustomInputWriteComponent extends FieldBase {
     processErrors(errors: { [key: string]: any }) {

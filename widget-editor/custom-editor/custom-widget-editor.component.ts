@@ -6,7 +6,8 @@ import { Observable, of } from 'rxjs';
 @Component({
     selector: "sf-content-editor",
     templateUrl: "./custom-widget-editor.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CustomWidgetEditorComponent implements WidgetEditor {
     heading: string;

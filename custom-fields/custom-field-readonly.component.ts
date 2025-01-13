@@ -16,6 +16,7 @@ import { FieldBase } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
             width: 100%;
             color: #666;
         }
-        `]
+        `],
+    standalone: false
 })
 export class CustomInputReadonlyComponent extends FieldBase { }

@@ -15,7 +15,8 @@ import { CustomTreeNodeComponentBase } from "@progress/sitefinity-adminapp-sdk/a
     <div class="sf-tree__description sf-breadcrumb -sf-overflow-ellipsis">
         <span data-sftest="custom-created-on" [textContent]="item.data.DateCreated | date:'medium'"></span>
     </div>
-    `
+    `,
+    standalone: false
 })
 export class RelatedDataCustomComponent extends CustomTreeNodeComponentBase {
     @Input() item: DataItem;
