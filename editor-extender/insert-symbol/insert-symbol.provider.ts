@@ -103,8 +103,10 @@ class InsertSymbolProvider implements EditorConfigProvider {
             },
             _activate: function() {
                 const that = this;
+                const range = this.editor.getRange();
                 that.popup.element.find(".symbol-cell").each(function() {
                     jQuery(this).click(function() {
+                        that.editor.selectRange(range);
                         that.popup.close();
                         const symbol = jQuery(this).text();
                         that.editor.paste(symbol);
