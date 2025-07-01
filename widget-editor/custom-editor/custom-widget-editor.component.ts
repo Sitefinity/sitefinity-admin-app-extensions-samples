@@ -52,6 +52,10 @@ export class CustomWidgetEditorComponent implements WidgetEditor {
         });
     }
 
+    getAllProperties(): Array<PropertyData> {
+        return this.getModifiedProperties();
+    }
+
     get propertiesValue() {
         return JSON.stringify(this._value, null, 2);
     }
