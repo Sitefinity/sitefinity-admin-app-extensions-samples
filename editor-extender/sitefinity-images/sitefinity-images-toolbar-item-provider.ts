@@ -1,9 +1,8 @@
 import { Injectable, ClassProvider, Inject } from "@angular/core";
-import { ToolBarItem, ToolBarItemsProvider, TOOLBARITEMS_TOKEN, SelectorService, SelectorOptions, SELECTOR_SERVICE, DataItem } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
+import { EditorHost, ToolBarItem, ToolBarItemsProvider, TOOLBARITEMS_TOKEN, SelectorService, SelectorOptions, SELECTOR_SERVICE, DataItem } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 
-const TRAILING_BREAK = "<br class='k-br'>";
-
-require("!style-loader!css-loader!./sitefinity-images-toolbar-item-provider.css");
+// The editor removes breaks with this class when it saves the content; they only let the caret move around the inserted element.
+const TRAILING_BREAK = "<br class='sf-rich-text-br'>";
 
 export const ensureTrailingBreaks = (html: string): string => {
     return `${TRAILING_BREAK}${html}${TRAILING_BREAK}`;
@@ -11,19 +10,20 @@ export const ensureTrailingBreaks = (html: string): string => {
 
 /**
  * A custom toolbar provider implementation for inserting existing images in the editor.
- * Kendo UI Editor custom tools documentation -> https://demos.telerik.com/kendo-ui/editor/custom-tools
  */
 @Injectable()
 class ImagesToolbarItemProvider implements ToolBarItemsProvider {
     constructor(@Inject(SELECTOR_SERVICE) private readonly selectorService: SelectorService) { }
 
-    getToolBarItems(editorHost: any): ToolBarItem[] {
+    getToolBarItems(editorHost: EditorHost): ToolBarItem[] {
         const CUSTOM_TOOLBAR_ITEM: ToolBarItem = {
             name: "Sitefinity-images",
             tooltip: "Sitefinity images",
+            icon: "sf-font-image",
             ordinal: 7,
             exec: () => {
-                const editor = editorHost.getKendoEditor();
+                // The editor is created after getToolBarItems runs, so get it when the tool is executed.
+                const editor = editorHost.getEditor();
 
                 // Save editor's current range, so we can insert
                 // later the HTML at this position.

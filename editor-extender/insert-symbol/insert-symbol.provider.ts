@@ -1,17 +1,17 @@
 import { Injectable, ClassProvider } from "@angular/core";
-import { ToolBarItem, EditorConfigProvider, EDITOR_CONFIG_TOKEN } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
+import { ToolBarItem, ToolBarItemPopupContext, EditorConfigProvider, EditorHost, EDITOR_CONFIG_TOKEN } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 import { InsertSymbolGenerator, DATA_ATTRIBUTE_NAME } from "./symbol-list/insert-symbol-generator";
-import { ToolBuilder, ToolConfig } from "../../helpers/tool-builder";
 
 const TOOLBAR_BUTTON_DATA = {
     DEFAULT: {
         name: "insertsymbol",
-        tooltip: "Insert symbol"
+        tooltip: "Insert symbol",
+        // Neither sf-font nor FontAwesome 4.7 has an omega glyph, so the CSS draws one.
+        icon: "sample-insert-symbol-icon"
     }
 };
 
-declare const kendo;
-declare const jQuery: any;
+const POPUP_TITLE = "Insert special characters";
 
 require("!style-loader!css-loader!./insert-symbol.provider.css");
 import symbolList from "./symbol-list/symbol-list.json";
@@ -23,7 +23,6 @@ class InsertSymbolProvider implements EditorConfigProvider {
      * Otherwise return an empty array.
      * Example: return [ "embed" ];
      * The above code will remove the embed toolbar item from the editor.
-     * Documentation where you can find all tools' names: https://docs.telerik.com/kendo-ui/api/javascript/ui/editor/configuration/tools
      *
      * @returns {string[]}
      * @memberof InsertSymbolProvider
@@ -33,9 +32,8 @@ class InsertSymbolProvider implements EditorConfigProvider {
     }
 
     /**
-     * This gives access to the Kendo UI Editor configuration object
-     * that is used to initialize the editor upon creation
-     * Kendo UI Editor configuration overview documentation -> https://docs.telerik.com/kendo-ui/controls/editors/editor/overview#configuration
+     * This gives access to the editor configuration object
+     * that is used to initialize the editor upon creation.
      *
      * @param {*} configuration
      * @returns The modified configuration.
@@ -48,83 +46,90 @@ class InsertSymbolProvider implements EditorConfigProvider {
     /**
      * The method that gets invoked when the editor constructs the toolbar actions.
      *
-     * @param {*} editorHost The Kendo's editor object.
-     * @returns {ToolBarItem[]} The custom toolbar items that will be added to the Kendo's toolbar.
+     * @param {EditorHost} editorHost The element hosting the editor.
+     * @returns {ToolBarItem[]} The custom toolbar items that will be added to the editor's toolbar.
      * @memberof InsertSymbolProvider
      */
     // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-    getToolBarItems(editorHost: any): ToolBarItem[] {
+    getToolBarItems(editorHost: EditorHost): ToolBarItem[] {
         /**
-         * The custom tool.
+         * The custom tool. It has a popup instead of an exec function.
+         * The toolbar opens, positions and closes the popup, closes it on Esc and returns the focus to the tool.
          */
         const DEFAULT_TOOL: ToolBarItem = {
             name: TOOLBAR_BUTTON_DATA.DEFAULT.name,
             tooltip: TOOLBAR_BUTTON_DATA.DEFAULT.tooltip,
+            icon: TOOLBAR_BUTTON_DATA.DEFAULT.icon,
             ordinal: -1,
-            exec: () => {}
+            popup: (container: HTMLElement, context: ToolBarItemPopupContext) => this.renderSymbolPopup(container, context)
         };
 
-        this.configureInsertSymbolTool();
         return [DEFAULT_TOOL];
     }
 
-    private configureInsertSymbolTool() {
-        const popupTemplateGenerator = function () {
-            const symbolGenerator = new InsertSymbolGenerator(Object.keys(symbolList).map(k => symbolList[k]));
-            const generatedHtml = symbolGenerator.generateHtml();
-            return `<div class='k-ct-popup symbol-popup'><div class='k-status symbol-title'>INSERT SPECIAL CHARACTERS</div>${generatedHtml}</div>`;
+    /**
+     * Renders the symbol buttons in the popup container that the toolbar provides.
+     *
+     * @returns A teardown function that the toolbar calls when the popup closes.
+     */
+    private renderSymbolPopup(container: HTMLElement, context: ToolBarItemPopupContext): () => void {
+        const ownerDocument = container.ownerDocument;
+        const symbolGenerator = new InsertSymbolGenerator(Object.keys(symbolList).map(k => symbolList[k]));
+        const title = ownerDocument.createElement("div");
+        const symbolPopup = ownerDocument.createElement("div");
+
+        title.className = "symbol-title";
+        title.textContent = POPUP_TITLE;
+        symbolPopup.className = "symbol-popup";
+        symbolGenerator.generateButtons(ownerDocument).forEach(button => symbolPopup.appendChild(button));
+        container.append(title, symbolPopup);
+
+        const onClick = (event: MouseEvent) => {
+            const cell = (event.target as HTMLElement).closest(`[${DATA_ATTRIBUTE_NAME}]`);
+
+            if (cell) {
+                // The editor inserts the html at the selection it had before the popup took the focus.
+                context.editor.exec("insertHtml", { html: escapeHtml(cell.getAttribute(DATA_ATTRIBUTE_NAME)) });
+                context.close();
+            }
         };
 
-        const Tool = kendo.ui.editor.Tool;
+        const onKeydown = (event: KeyboardEvent) => moveFocus(event, Array.from(symbolPopup.querySelectorAll<HTMLElement>(`[${DATA_ATTRIBUTE_NAME}]`)));
 
-        const PopupTool = Tool.extend({
-            initialize: function (ui, editor) {
-                this.editor = editor;
-                const popup = jQuery(this.options.popupTemplate)
-                    .appendTo("body")
-                    .kendoPopup({
-                        anchor: ui,
-                        copyAnchorStyles: false,
-                        open: this._open.bind(this),
-                        activate: this._activate.bind(this),
-                        close: this._close.bind(this),
-                    })
-                    .data("kendoPopup");
-                this.popup = popup;
+        symbolPopup.addEventListener("click", onClick);
+        symbolPopup.addEventListener("keydown", onKeydown);
 
-                ui.on("click", this._toggle.bind(this));
-            },
-            _toggle: function () {
-                this.popup.toggle();
-            },
-            command: jQuery.noop,
-            _open: function() {
-
-            },
-            _activate: function() {
-                const that = this;
-                const range = this.editor.getRange();
-                that.popup.element.find(".symbol-cell").each(function() {
-                    jQuery(this).click(function() {
-                        that.editor.selectRange(range);
-                        that.popup.close();
-                        const symbol = jQuery(this).text();
-                        that.editor.paste(symbol);
-                    });
-                });
-            },
-            _close: function() {
-                const that = this;
-                that.popup.element.find(".symbol-cell").each(function() {
-                    jQuery(this).off("click");
-                });
-            },
-            destroy: function() {
-                this.popup.destroy();
-            }
-        });
-        ToolBuilder.registerTool(kendo, PopupTool, TOOLBAR_BUTTON_DATA.DEFAULT.name, popupTemplateGenerator(), true);
+        return () => {
+            symbolPopup.removeEventListener("click", onClick);
+            symbolPopup.removeEventListener("keydown", onKeydown);
+        };
     }
+}
+
+/**
+ * Moves the focus between the symbol buttons with the arrow, Home and End keys.
+ */
+function moveFocus(event: KeyboardEvent, buttons: HTMLElement[]) {
+    const current = buttons.indexOf(event.target as HTMLElement);
+    const columns = buttons.filter(button => button.offsetTop === buttons[0].offsetTop).length || 1;
+    const moves: { [key: string]: number } = {
+        ArrowRight: current + 1,
+        ArrowLeft: current - 1,
+        ArrowDown: current + columns,
+        ArrowUp: current - columns,
+        Home: 0,
+        End: buttons.length - 1
+    };
+    const next = buttons[moves[event.key]];
+
+    if (current > -1 && next) {
+        event.preventDefault();
+        next.focus();
+    }
+}
+
+function escapeHtml(value: string): string {
+    return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 export const INSERT_SYMBOL_PROVIDER: ClassProvider = {

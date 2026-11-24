@@ -1,20 +1,18 @@
 import { Injectable, ClassProvider } from "@angular/core";
-import { EditorConfigProvider, ToolBarItem, TOOLBARITEMS_TOKEN, groupToolbarButtons } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
-import { fromEvent } from "rxjs";
-import { first } from "rxjs/operators";
+import { EditorConfigProvider, EditorHost, ToolBarItem, TOOLBARITEMS_TOKEN, groupToolbarButtons } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 
-// These classes are defined in the application's styles.
-const RTL_CLASS = "k-rtl";
-const LTR_BUTTON_SELECTOR = ".k-i-Left-to-right";
-const RTL_BUTTON_SELECTOR = ".k-i-Right-to-left";
+const RTL = "rtl";
 const TOOLBAR_BUTTONS_DATA = {
     LTR: {
         name: "Left-to-right",
-        tooltip: "Left-to-right"
+        tooltip: "Left-to-right",
+        // sf-font glyph; the CSS adds the direction arrow.
+        icon: "sf-font-paragraph sample-text-direction-icon -ltr"
     },
     RTL: {
         name: "Right-to-left",
-        tooltip: "Right-to-left"
+        tooltip: "Right-to-left",
+        icon: "sf-font-paragraph sample-text-direction-icon -rtl"
     }
 };
 
@@ -25,40 +23,43 @@ class SwitchTextDirectionProvider implements EditorConfigProvider {
     /**
      * The method that gets invoked when the editor constructs the toolbar actions.
      *
-     * @param {*} editorHost The Kendo's editor object.
-     * @returns {ToolBarItem[]} The custom toolbar items that will be added to the Kendo's toolbar.
+     * @param {EditorHost} editorHost The element hosting the editor.
+     * @returns {ToolBarItem[]} The custom toolbar items that will be added to the editor's toolbar.
      * @memberof SwitchTextDirectionProvider
      */
-    getToolBarItems(editorHost: any): ToolBarItem[] {
+    getToolBarItems(editorHost: EditorHost): ToolBarItem[] {
         const SWITCH_LEFT_TO_RIGHT_TOOL: ToolBarItem = {
             name: TOOLBAR_BUTTONS_DATA.LTR.name,
             tooltip: TOOLBAR_BUTTONS_DATA.LTR.tooltip,
+            icon: TOOLBAR_BUTTONS_DATA.LTR.icon,
             ordinal: 6,
             exec: () => {
-                const editorParent = editorHost.getKendoEditor().element.parent();
-                if (editorParent.hasClass(RTL_CLASS)) {
-                    editorParent.removeClass(RTL_CLASS);
+                const editorParent = this.getEditorParent(editorHost);
+                if (editorParent.dir === RTL) {
+                    editorParent.removeAttribute("dir");
                 }
             }
         };
 
         const SWITCH_RIGHT_TO_LEFT_TOOL: ToolBarItem = {
             name: TOOLBAR_BUTTONS_DATA.RTL.name,
-            tooltip:  TOOLBAR_BUTTONS_DATA.RTL.tooltip,
+            tooltip: TOOLBAR_BUTTONS_DATA.RTL.tooltip,
+            icon: TOOLBAR_BUTTONS_DATA.RTL.icon,
             ordinal: 7,
             exec: () => {
-                const editorParent = editorHost.getKendoEditor().element.parent();
-                editorParent.hasClass(RTL_CLASS) ? editorParent.removeClass(RTL_CLASS) : editorParent.addClass(RTL_CLASS);
+                const editorParent = this.getEditorParent(editorHost);
+                if (editorParent.dir === RTL) {
+                    editorParent.removeAttribute("dir");
+                } else {
+                    editorParent.dir = RTL;
+                }
             }
         };
 
-        // Should group the direction buttons once the editor is loaded and focused.
-        fromEvent(editorHost[0], "focusin")
-            .pipe(first())
-            .subscribe(() => {
-                const toolbar = editorHost.getKendoEditor().toolbar.element;
-                groupToolbarButtons(toolbar, RTL_BUTTON_SELECTOR, LTR_BUTTON_SELECTOR, false);
-            });
+        // The editor and its toolbar are created after this method runs, so group the direction buttons once they are ready.
+        editorHost.whenReady(editor => {
+            groupToolbarButtons(editor.toolbar.element, TOOLBAR_BUTTONS_DATA.RTL.name, TOOLBAR_BUTTONS_DATA.LTR.name, false);
+        });
 
         return [SWITCH_LEFT_TO_RIGHT_TOOL, SWITCH_RIGHT_TO_LEFT_TOOL];
     }
@@ -77,9 +78,8 @@ class SwitchTextDirectionProvider implements EditorConfigProvider {
     }
 
     /**
-     * This gives access to the Kendo UI Editor configuration object
-     * that is used to initialize the editor upon creation
-     * Kendo UI Editor configuration overview documentation -> https://docs.telerik.com/kendo-ui/controls/editors/editor/overview#configuration
+     * This gives access to the editor configuration object
+     * that is used to initialize the editor upon creation.
      *
      * @param {*} configuration
      * @returns The modified configuration.
@@ -87,6 +87,13 @@ class SwitchTextDirectionProvider implements EditorConfigProvider {
      */
     configureEditor(configuration: any): any {
         return configuration;
+    }
+
+    /**
+     * The direction is set on the parent of the editable element, so it applies to the whole content.
+     */
+    private getEditorParent(editorHost: EditorHost): HTMLElement {
+        return editorHost.getEditor().element.parentElement;
     }
 }
 

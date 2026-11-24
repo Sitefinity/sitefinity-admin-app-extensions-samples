@@ -1,5 +1,5 @@
 import { ClassProvider, Injectable } from "@angular/core";
-import { ToolBarItem, EditorConfigProvider, EDITOR_CONFIG_TOKEN  } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
+import { ToolBarItem, EditorConfigProvider, EditorHost, EDITOR_CONFIG_TOKEN  } from "@progress/sitefinity-adminapp-sdk/app/api/v1";
 import { HttpClient } from "@angular/common/http";
 import { Observable, forkJoin } from "rxjs";
 
@@ -42,8 +42,7 @@ const proofModeCultures = [
 ];
 
 /**
- * A custom toolbar provider implementation for checheking and correcting the spelling in the kendo editor.
- * Kendo UI Editor custom tools documentation -> https://demos.telerik.com/kendo-ui/editor/custom-tools
+ * A custom toolbar provider implementation for checheking and correcting the spelling in the html editor.
  */
 @Injectable()
 class EditorSpellCheckProvider implements EditorConfigProvider {
@@ -54,12 +53,13 @@ class EditorSpellCheckProvider implements EditorConfigProvider {
 
     /**
      * The method that gets invoked when the editor constructs the toolbar actions.
-     * @param editorHost The instance of the editor.
+     * @param editorHost The element hosting the editor. The editor is created after this method runs, so get it when the tool is executed.
      */
-    getToolBarItems(editorHost: any): ToolBarItem[] {
+    getToolBarItems(editorHost: EditorHost): ToolBarItem[] {
         const SPELL_CHECK_TOOLBAR_ITEM: ToolBarItem = {
             name: "Spell-check",
             tooltip: "Spell check",
+            icon: "sf-font-check",
             ordinal: -1,
             exec: () => this.spellCheck(editorHost, this.culture)
         };
@@ -73,23 +73,21 @@ class EditorSpellCheckProvider implements EditorConfigProvider {
          * Otherwise return an empty array.
          * Example: return [ "embed" ];
          * The above code will remove the embed toolbar item from the editor.
-         * Documentation where you can find all tools' names: https://docs.telerik.com/kendo-ui/api/javascript/ui/editor/configuration/tools
          */
         return [];
     }
 
     /**
-     * This gives access to the Kendo UI Editor configuration object
-     * that is used to initialize the editor upon creation
-     * Kendo UI Editor configuration Overiview documentation -> https://docs.telerik.com/kendo-ui/controls/editors/editor/overview#configuration
+     * This gives access to the editor configuration object
+     * that is used to initialize the editor upon creation.
      */
     configureEditor(configuration: any) {
         this.culture = configuration.culture;
         return configuration;
     }
 
-    private spellCheck(editorHost: any, culture: string) {
-        const editor = editorHost.getKendoEditor();
+    private spellCheck(editorHost: EditorHost, culture: string) {
+        const editor = editorHost.getEditor();
         let text = editor.value();
         const textWithoutHTMLTags = this.stripHTML(text);
 

@@ -8,7 +8,9 @@ This is an extension to the rich text editor in **AdminApp** that allows the use
 
 The popup with the symbol list dropdown popup is opened via a custom button from the editor's toolbar.
 
-- click: inserts the symbol
+- click, Enter or Space: inserts the symbol
+- arrow keys, Home and End: move the focus between the symbols
+- Esc: closes the popup and returns the focus to the toolbar button
 - symbol hover: displays a tooltip with the defined name of the symbol
 
 ## Symbol list source
@@ -23,11 +25,11 @@ Replacing or modifying the required file would change the contents of the insert
 
 **InsertSymbolProvider**: a custom provider that is responsible for registering the tool. The tool itself is responsible for inserting the symbol into the editor.
 
-A **ToolBuilder** class is added in _../utils/tool-builder.ts_ that provides an endpoint for creating and registering a popup tool for the Kendo editor toolbar.
+The tool has a `popup` function instead of an `exec` function. When the tool is pressed, the toolbar opens a popup anchored to it and calls `popup(container, context)` with the popup element and a context that holds the editor and a `close()` function. The toolbar positions the popup and closes it on Esc, which returns the focus to the tool, or when the focus leaves the popup.
 
-The tool is created and registered in the toolbar and its popup is populated via the **InsertSymbolGenerator** class. Its constructor argument is the JSON file that is used to populate the popup. Making changes to that file, or using another, would change the content of the tool dropdown popup.
+The popup is populated with a `<button type="button">` for each symbol via the **InsertSymbolGenerator** class. Its constructor argument is the JSON file that is used to populate the popup. Making changes to that file, or using another, would change the content of the tool dropdown popup. Each button is named after its symbol, so screen readers announce e.g. "euro sign".
 
-Events are attached on InsertSymbolTool._activate() and detached on InsertSymbolTool._close(). On click the _exec() function is called, the symbol is inserted and the popup is closed.
+The click and keydown listeners are attached when the popup is rendered and detached by the teardown function that `popup` returns, which the toolbar calls when the popup closes. On click the symbol is inserted with `editor.exec("insertHtml", { html })` at the selection the editor had before the popup opened, and the popup is closed with `context.close()`. The arrow, Home and End keys move the focus between the symbols.
 
 ### Added dependencies
 

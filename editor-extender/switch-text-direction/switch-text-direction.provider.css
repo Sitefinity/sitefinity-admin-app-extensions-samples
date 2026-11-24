@@ -1,41 +1,16 @@
-.k-icon.k-i-Left-to-right,
-.k-icon.k-i-Right-to-left {
-    font-family: FontAwesome !important;
-    font-size: 16px !important;
-    width: auto !important;
+/* The arrow is a FontAwesome 4.7 glyph next to the sf-font paragraph glyph of the icon. */
+.sample-text-direction-icon::after {
+    font-family: FontAwesome;
+    font-size: 10px;
 }
 
-.k-i-Right-to-left::after {
-    content: "\f0d9";
-}
-
-.k-i-Right-to-left::before {
-    content: "\f1dd";
-}
-
-.k-i-Left-to-right::after {
-    content: "\f1dd";
-    margin-right: 15px;
-}
-
-.k-i-Left-to-right::before {
+.sample-text-direction-icon.-ltr::after {
     content: "\f0da";
-    margin-right: 0 !important;
+    margin-left: 2px;
 }
 
-.k-icon.k-i-Left-to-right::before,
-.k-icon.k-i-Right-to-left::before {
-    padding-right: 0;
-    width: auto !important;
-}
-
-.k-icon.k-i-Left-to-right::after,
-.k-icon.k-i-Right-to-left::after {
-    padding: 5px 5px 5px 0;
-    height: 25px !important;
-}
-
-.k-state-selected .k-icon::after {
-    background-color: #e4e4e4;
-    border-radius: 0;
+.sample-text-direction-icon.-rtl::after {
+    order: -1;
+    content: "\f0d9";
+    margin-right: 2px;
 }
